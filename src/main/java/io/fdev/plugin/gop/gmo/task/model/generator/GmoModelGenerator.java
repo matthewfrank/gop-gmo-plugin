@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -16,7 +17,6 @@ import java.util.stream.Stream;
 public class GmoModelGenerator {
 
 	private static final Pattern EMPTY_LINE_PATTERN = Pattern.compile("\\s*^\\s*$\\s*", Pattern.MULTILINE);
-	private static final String MODE_EXTENSION = "Dto.java";
 
 	public void generate(GmoModelContext context) throws IOException {
 
@@ -36,20 +36,27 @@ public class GmoModelGenerator {
 		}
 
 		log.info("Generate DTO model");
-		for (ClassModel classModel : createClassModels(context)) {
+		for (GmoModel gmoModel : createClassModels(context)) {
 
-			Path modelPath = Path.of(generatedOutPath.toString(), classModel.getModelType() + MODE_EXTENSION);
-			Files.write(modelPath, classModel.prettyPrint().getBytes());
+			String fileName = String.valueOf(gmoModel.getModelType()) +
+					GmoGeneratorConstants.modelPostfix +
+					GmoGeneratorConstants.modelExtension;
+
+			Path modelPath = Path.of(
+					generatedOutPath.toString(),
+					fileName
+			);
+			Files.write(modelPath, List.of(gmoModel.generate()), StandardCharsets.UTF_16);
 			log.trace("Generated {}", modelPath);
 		}
 	}
 
-	private List<ClassModel> createClassModels(GmoModelContext context) {
+	private List<GmoModel> createClassModels(GmoModelContext context) {
 
 		String[] entityRawDefinitions = EMPTY_LINE_PATTERN.split(context.getContextDefinition());
 		return Stream.of(entityRawDefinitions)
-				.filter(GeoGeneratorPredicates.noTransient)
-				.map(def -> new ClassModel(def, context))
+				.filter(GmoGeneratorPredicates.noTransient)
+				.map(def -> new GmoModel(def, context))
 				.collect(Collectors.toList());
 	}
 }

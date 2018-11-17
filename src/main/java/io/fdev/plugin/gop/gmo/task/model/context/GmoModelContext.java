@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -27,18 +26,10 @@ public class GmoModelContext {
 
 	public GmoModelContext(GenerateGmoModelExtension extension) throws IOException {
 
-		this.modelPackage = extension.modelPackage;
-		this.generatedOutPath = Path.of(extension.basePath + extension.modelPackage.replace(".", File.separator) + File.separator);
-		this.contextDefinition = Files.readString(Path.of(extension.contextPath));
-		this.customFields = GSON.fromJson(Files.readString(Path.of(extension.mappingsPath)), MAP_TYPE);
-		this.langFields = GSON.fromJson(Files.readString(Path.of(extension.langMappingPath)), MAP_TYPE);
-	}
-
-	@Deprecated
-	public Map<String, String> getClassModelCustomMembers(String classModelName) {
-
-		return customFields.containsKey(classModelName)
-				? customFields.get(classModelName)
-				: new HashMap<>();
+		this.modelPackage = extension.getModelPackage();
+		this.generatedOutPath = Path.of(extension.getBasePath() + extension.getModelPackage().replace(".", File.separator) + File.separator);
+		this.contextDefinition = Files.readString(Path.of(extension.getContextPath()));
+		this.customFields = GSON.fromJson(Files.readString(Path.of(extension.getMappingsPath())), MAP_TYPE);
+		this.langFields = GSON.fromJson(Files.readString(Path.of(extension.getLangMappingPath())), MAP_TYPE);
 	}
 }

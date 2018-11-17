@@ -1,10 +1,13 @@
 package io.fdev.plugin.gop.gmo.task.model;
 
+import lombok.Data;
+
+@Data
 public class GenerateGmoModelExtension {
 
-	public String modelPackage;
-	public String basePath;
-	public String mappingsPath;
-	public String langMappingPath;
-	public String contextPath;
+	private String modelPackage;
+	private String basePath;
+	private String mappingsPath;
+	private String langMappingPath;
+	private String contextPath;
 }

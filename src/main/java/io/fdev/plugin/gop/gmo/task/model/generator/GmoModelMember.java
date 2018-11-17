@@ -8,36 +8,36 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Data
-class ClassMember {
+class GmoModelMember implements Model {
 
-	private final static Pattern PATTERN = Pattern.compile("(\\w+)\\s*(\\S+)\\s*(\\w+)?\\s*(\\w+)?\\s*(?:(@desc)\\s*(.+))");
+	private static final Pattern PATTERN = Pattern.compile("(\\w+)\\s*(\\S+)\\s*(\\w+)?\\s*(\\w+)?\\s*(?:(@desc)\\s*(.+))");
 	private String memberType;
 	private String memberImport;
 	private String memberName;
 	private String memberColumn;
 	private String memberDescription;
 
-	public ClassMember(String rawMember, Map<String, String> classCustomMembers, Map<String, String> langTypes) {
+	GmoModelMember(String rawMember, Map<String, String> classCustomMembers, Map<String, String> langTypes) {
 
 		Matcher matcher = PATTERN.matcher(rawMember);
 		while (matcher.find()) {
-			this.memberName = matcher.group(1);
-			if (classCustomMembers.containsKey(this.memberName)) {
-				this.memberType = classCustomMembers.get(this.memberName);
+			memberName = matcher.group(1);
+			if (classCustomMembers.containsKey(memberName)) {
+				memberType = classCustomMembers.get(memberName);
 			} else {
 				String type = matcher.group(2);
-				if (type.contains("*")) {
-					this.memberType = "java.util.List<" + type.replace("*", "Dto") + ">";
-				} else {
-					this.memberType = langTypes.getOrDefault(type, type + "Dto");
+				memberType = langTypes.getOrDefault(type, type + GmoGeneratorConstants.modelPostfix);
+				if (GmoGeneratorPredicates.isCollection.test(type)) {
+					memberType = GmoGeneratorPredicates.toRawList.apply(memberType);
 				}
 			}
-			this.memberColumn = matcher.group(4);
-			this.memberDescription = matcher.group(6);
+			memberColumn = matcher.group(4);
+			memberDescription = matcher.group(6);
 		}
 	}
 
-	String prettyPrint() {
+	@Override
+	public String generate() {
 
 		StringBuilder builder = new StringBuilder();
 		builder.append("\t").append("/**").append(System.lineSeparator());
@@ -46,7 +46,7 @@ class ClassMember {
 			builder.append("\t").append("* @column ").append(memberColumn).append(System.lineSeparator());
 		}
 		builder.append("\t").append("**/").append(System.lineSeparator());
-		builder.append("\t").append("private ").append(this.memberType).append(" ").append(memberName).append(";");
+		builder.append("\t").append("private ").append(memberType).append(" ").append(memberName).append(";");
 		builder.append("\t").append(System.lineSeparator());
 		builder.append("\t").append(System.lineSeparator());
 
