@@ -18,7 +18,7 @@ public class GmoModelGenerator {
 	private static final Pattern EMPTY_LINE_PATTERN = Pattern.compile("\\s*^\\s*$\\s*", Pattern.MULTILINE);
 	private static final String MODE_EXTENSION = "Dto.java";
 
-	public GmoModelGenerator(GmoModelContext context) throws IOException {
+	public void generate(GmoModelContext context) throws IOException {
 
 		Path generatedOutPath = context.getGeneratedOutPath();
 		if (Files.exists(generatedOutPath)) {
@@ -48,7 +48,7 @@ public class GmoModelGenerator {
 
 		String[] entityRawDefinitions = EMPTY_LINE_PATTERN.split(context.getContextDefinition());
 		return Stream.of(entityRawDefinitions)
-				.filter(Predicates.noTransient)
+				.filter(GeoGeneratorPredicates.noTransient)
 				.map(def -> new ClassModel(def, context))
 				.collect(Collectors.toList());
 	}

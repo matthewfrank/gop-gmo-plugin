@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 
 import static java.util.function.Predicate.not;
 
-interface Predicates {
+interface GeoGeneratorPredicates {
 
 	Predicate<String> noTransient = not(s -> s.startsWith("@transient"));
 }

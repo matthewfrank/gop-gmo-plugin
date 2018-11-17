@@ -19,6 +19,7 @@ public class GmoModelContext {
 	private static final Gson GSON = new Gson();
 	private static final Type MAP_TYPE = TypeToken.get(Map.class).getType();
 
+	private final String modelPackage;
 	private final Path generatedOutPath;
 	private final String contextDefinition;
 	private final Map<String, Map<String, String>> customFields;
@@ -26,6 +27,7 @@ public class GmoModelContext {
 
 	public GmoModelContext(GenerateGmoModelExtension extension) throws IOException {
 
+		this.modelPackage = extension.modelPackage;
 		this.generatedOutPath = Path.of(extension.basePath + extension.modelPackage.replace(".", File.separator) + File.separator);
 		this.contextDefinition = Files.readString(Path.of(extension.contextPath));
 		this.customFields = GSON.fromJson(Files.readString(Path.of(extension.mappingsPath)), MAP_TYPE);

@@ -13,29 +13,30 @@ import java.util.stream.Collectors;
 class ClassModel {
 
 	public static final String ROOT_NAME = "/root";
-	public static final Pattern PATTERN = Pattern.compile("^(def)?\\s*(\\S+)\\s*(\\w+)?\\s*(\\w+)?\\s*(?:(@desc)\\s*(.+))");
+	public static final Pattern DEFINITION_PATTERN = Pattern.compile("^(def)?\\s*(\\S+)\\s*(\\w+)?\\s*(\\w+)?\\s*(?:(@desc)\\s*(.+))");
+	public static final Pattern MEMBER_SPLIT_PATTERN = Pattern.compile("\\R");
+	private final List<ClassMember> members;
+	private final GmoModelContext context;
 
 	private String modelType;
 	private String modelTable;
 	private String modelDescription;
-	private final List<ClassMember> members;
-	private GmoModelContext context;
 
 	public ClassModel(String rawClassModel, GmoModelContext context) {
 
 		this.context = context;
-		this.defineModel(rawClassModel.split("\\R", 2)[0]);
+		this.defineModel(MEMBER_SPLIT_PATTERN.split(rawClassModel, 2)[0]);
 		this.members = generateMembers(rawClassModel);
 	}
 
 	void defineModel(String rawModelDefinition) {
 
-		if (rawModelDefinition.contains("/root")) {
+		if (ROOT_NAME.contains(rawModelDefinition)) {
 			this.modelType = "BundleRoot";
 			this.modelTable = "BUNDLE";
 			this.modelDescription = "Root table, bundle holder";
 		} else {
-			Matcher matcher = PATTERN.matcher(rawModelDefinition);
+			Matcher matcher = DEFINITION_PATTERN.matcher(rawModelDefinition);
 			while (matcher.find()) {
 				this.modelType = matcher.group(2);
 				this.modelTable = matcher.group(4);
@@ -50,7 +51,7 @@ class ClassModel {
 		Map<String, String> langFields = context.getLangFields();
 		return rawClassModel.lines().skip(1)
 				.map(String::trim)
-				.filter(Predicates.noTransient)
+				.filter(GeoGeneratorPredicates.noTransient)
 				.map(d -> new ClassMember(d, classModelCustomMembers, langFields))
 				.collect(Collectors.toList());
 	}
@@ -69,7 +70,7 @@ class ClassModel {
 
 	private String buildPackage() {
 
-		return "package pl.decerto.gmo.generated;" + System.lineSeparator().repeat(1);
+		return "package " + context.getModelPackage() + System.lineSeparator().repeat(1);
 	}
 
 	private String buildClassDefinition() {

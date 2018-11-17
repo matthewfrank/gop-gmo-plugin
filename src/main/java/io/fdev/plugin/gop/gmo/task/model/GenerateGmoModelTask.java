@@ -17,6 +17,7 @@ public class GenerateGmoModelTask extends DefaultTask {
 				.getByType(GenerateGmoModelExtension.class);
 
 		var context = new GmoModelContext(gmoModelConfiguration);
-		  new GmoModelGenerator(context);
+		var generator = new GmoModelGenerator();
+		generator.generate(context);
 	}
 }
