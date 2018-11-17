@@ -1,7 +1,7 @@
 plugins {
-	id 'java'
 	id 'java-gradle-plugin'
 	id 'com.gradle.plugin-publish' version '0.10.0'
+	id 'maven-publish'
 }
 
 gradlePlugin {
@@ -18,6 +18,7 @@ pluginBundle {
 	vcsUrl = 'https://github.com/matthewfrank/gop-gmo-plugin.git'
 	tags = ['GMO', 'Hyperon']
 	description = 'Gop Team plugin'
+	version = '0.1'
 
 	plugins {
 		gopGmoPlugin {
@@ -26,7 +27,15 @@ pluginBundle {
 	}
 }
 
-version '0.1-beta'
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+		}
+	}
+}
+
+version '0.1'
 group 'io.fdev.plugin.gop.gmo'
 
 sourceCompatibility = JavaVersion.VERSION_11
@@ -36,4 +45,8 @@ repositories {
 }
 
 dependencies {
+
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	implementation group: 'org.projectlombok', name: 'lombok', version: lombok_version
+	implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
 }
