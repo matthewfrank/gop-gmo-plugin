@@ -1,0 +1,39 @@
+plugins {
+	id 'java'
+	id 'java-gradle-plugin'
+	id 'com.gradle.plugin-publish' version '0.10.0'
+}
+
+gradlePlugin {
+	plugins {
+		gopGmoPlugin {
+			id = 'io.fdev.plugin.gop.gmo'
+			implementationClass = 'io.fdev.plugin.gop.gmo.GopGmoPlugin'
+		}
+	}
+}
+
+pluginBundle {
+	website = 'https://github.com/matthewfrank/gop-gmo-plugin'
+	vcsUrl = 'https://github.com/matthewfrank/gop-gmo-plugin.git'
+	tags = ['GMO', 'Hyperon']
+	description = 'Gop Team plugin'
+
+	plugins {
+		gopGmoPlugin {
+			displayName = 'Gop Team GMO plugin'
+		}
+	}
+}
+
+version '0.1-beta'
+group 'io.fdev.plugin.gop.gmo'
+
+sourceCompatibility = JavaVersion.VERSION_11
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+}
