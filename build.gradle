@@ -46,7 +46,9 @@ repositories {
 
 dependencies {
 
-	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4j_version
 	implementation group: 'org.projectlombok', name: 'lombok', version: lombok_version
 	implementation group: 'com.google.code.gson', name: 'gson', version: gson_version
+	implementation group: 'org.apache.httpcomponents', name: 'httpcore', version: httpcore_version
+	implementation group: 'org.apache.httpcomponents', name: 'httpmime', version: httpmime_version
 }
