@@ -18,7 +18,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
@@ -53,7 +52,8 @@ public class DownloadSuperpackTask extends DefaultTask {
 				.build()
 				.send(request, HttpResponse.BodyHandlers.ofByteArrayConsumer(bytes -> bytes.ifPresent(output::writeBytes)));
 
-		try (OutputStream outputStream = new FileOutputStream(buildSuperpackName(extension))) {
+		String name = extension.getDestinationPath() + File.separator + "gop-superpack.zip";
+		try (OutputStream outputStream = new FileOutputStream(name)) {
 			output.writeTo(outputStream);
 		}
 	}
@@ -69,14 +69,5 @@ public class DownloadSuperpackTask extends DefaultTask {
 				throw new RuntimeException(e);
 			}
 		};
-	}
-
-	private String buildSuperpackName(DownloadSuperpackExtension extension) {
-
-		String name = "superpack_";
-		name += LocalDateTime.now().format(SUPERPACK_DATE_TIME_PATTERN);
-		name += ".zip";
-
-		return extension.getDestinationPath() + File.separator + name;
 	}
 }
