@@ -18,12 +18,10 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
-import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
 public class DownloadSuperpackTask extends DefaultTask {
 
-	private static final DateTimeFormatter SUPERPACK_DATE_TIME_PATTERN = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
 	private static final String MULTIPART_FORM_DATA_BOUNDARY = "superpack-export-definition";
 
 	@TaskAction
