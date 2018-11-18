@@ -9,7 +9,7 @@ interface GmoGeneratorPredicates {
 
 	Predicate<String> noTransient = not(s -> s.trim().startsWith("@transient"));
 
-	Predicate<String> isCollection = not(s -> s.trim().contains("*"));
+	Predicate<String> isCollection = s -> s.trim().contains("*");
 
-	Function<String, String> toRawList = type -> "java.util.List<" + type.replace("*", GmoGeneratorConstants.modelPostfix) + ">";
+	Function<String, String> toRawList = type -> "java.util.List<" + type.replace("*", "") + ">";
 }

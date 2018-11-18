@@ -3,11 +3,11 @@ package io.fdev.plugin.gop.gmo.task.model.generator;
 import io.fdev.plugin.gop.gmo.task.model.context.GmoModelContext;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 @Data
 class GmoModel implements Model {
@@ -40,8 +40,8 @@ class GmoModel implements Model {
 
 	private void defineModel(String rawModelDefinition) {
 
-		if (GmoGeneratorConstants.root.contains(rawModelDefinition)) {
-			this.modelType = "BundleRoot";
+		if (rawModelDefinition.contains(GmoGeneratorConstants.root)) {
+			this.modelType = "Bundle";
 			this.modelTable = "BUNDLE";
 			this.modelDescription = "Root table, bundle holder";
 		} else {
@@ -59,16 +59,21 @@ class GmoModel implements Model {
 		Map<String, String> customFields = context.getCustomFields().getOrDefault(this.modelType, Map.of());
 		Map<String, String> langFields = context.getLangFields();
 
-		return rawClassModel.lines()
+		List<Model> members = new ArrayList<>();
+		members.add(new GmoModelDefaultIdMember(customFields));
+
+		rawClassModel.lines()
 				.skip(1)
 				.filter(GmoGeneratorPredicates.noTransient)
 				.map(def -> new GmoModelMember(def, customFields, langFields))
-				.collect(Collectors.toList());
+				.forEach(members::add);
+
+		return members;
 	}
 
 	private String buildPackage() {
 
-		return "package " + context.getModelPackage() + System.lineSeparator().repeat(1);
+		return "package " + context.getModelPackage() + ";" + System.lineSeparator().repeat(1);
 	}
 
 	private String buildClassDefinition() {
