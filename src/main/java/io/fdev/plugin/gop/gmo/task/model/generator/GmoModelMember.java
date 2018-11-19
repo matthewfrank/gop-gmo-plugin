@@ -47,8 +47,7 @@ class GmoModelMember implements Model {
 		}
 		builder.append("\t").append("**/").append(System.lineSeparator());
 		builder.append("\t").append("private ").append(memberType).append(" ").append(memberName).append(";");
-		builder.append("\t").append(System.lineSeparator());
-		builder.append("\t").append(System.lineSeparator());
+		builder.append(System.lineSeparator().repeat(2));
 
 		return builder.toString();
 	}

@@ -46,7 +46,7 @@ public class GmoModelGenerator {
 					generatedOutPath.toString(),
 					fileName
 			);
-			Files.write(modelPath, List.of(gmoModel.generate()), StandardCharsets.UTF_16);
+			Files.write(modelPath, List.of(gmoModel.generate()), StandardCharsets.UTF_8);
 			log.trace("Generated {}", modelPath);
 		}
 	}
