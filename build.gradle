@@ -35,7 +35,7 @@ publishing {
 	}
 }
 
-version '0.2'
+version '0.3'
 group 'io.fdev.plugin.gop.gmo'
 
 sourceCompatibility = JavaVersion.VERSION_11
